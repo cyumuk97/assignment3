@@ -7,6 +7,7 @@ import sys
 import re
 import argparse
 
+
 def get_fh(filename, openfile):
     """
     Opens the file and passes back a file object
@@ -26,6 +27,7 @@ def get_fh(filename, openfile):
 
     return newfile, file1, file2
 
+
 def _check_size_of_lists(header, sequence):
     """
     Compares the sizes of two lists
@@ -35,6 +37,7 @@ def _check_size_of_lists(header, sequence):
 
     else:
         return True
+
 
 def get_header_and_sequence_lists(filehandle):
     """
@@ -51,6 +54,7 @@ def get_header_and_sequence_lists(filehandle):
     _check_size_of_lists(header, sequence)
     return sequence, header
 
+
 def _get_nt_occurrence(character, sequence):
     """
     Calculates the occurrence of a nucleotide in a sequence
@@ -66,30 +70,37 @@ def _get_nt_occurrence(character, sequence):
 
     return count
 
+
 def _get_accession(header):
     """
     Returns the accession number
     """
     return header[1:10]
 
+
 def print_sequence_stats(header, sequence, filehandle):
     """
     Prints the top line of the output and each sequence's numerical values
     """
     number = 0
-    accession = _get_accession(header)
-    a = _get_nt_occurrence('A', sequence)
-    G = _get_nt_occurrence('G', sequence)
-    C = _get_nt_occurrence('C', sequence)
-    T = _get_nt_occurrence('T', sequence)
-    N = _get_nt_occurrence('N', sequence)
-    length = len(sequence)
-    GC = (G + C) / length
+    for line in filehandle:
+        number += 1
+        accession = _get_accession(header)
+        adenine = _get_nt_occurrence('A', sequence)
+        guanine = _get_nt_occurrence('G', sequence)
+        cytosine = _get_nt_occurrence('C', sequence)
+        thymine = _get_nt_occurrence('T', sequence)
+        nucleotide = _get_nt_occurrence('N', sequence)
+        length = len(sequence)
+        percentage = (guanine + cytosine) / length
 
-    print(f'Number\tAccession\t"As"\t"Gs"\t"Cs"\t"Ts"\t"Ns"\tLength\tGC%')
+        print(f'Number\tAccession\t"As"\t"Gs"\t"Cs"\t"Ts"\t"Ns"\tLength\tGC%')
 
-    print('\n')
-    print(f'{number}\t{accession}\t{A}\t{G}\t{C}\t{T}\t{N}\t{length}\t{GC:.1f}')
+        print('\n')
+        print(f"""{number}\t{accession}\t{adenine}\t{guanine}\t
+              {cytosine}\t{thymine}\t{nucleotide}\t{length}\t{percentage:.1f}
+              """)
+
 
 def get_cli_args():
     """
