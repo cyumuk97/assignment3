@@ -33,4 +33,6 @@ def test_get_header_and_sequence_lists():
     """
     Tests if get_header_and_sequence_lists works correctly
     """
-    assert 
+    filehandle = get_fh("ss.txt", 'r')
+
+    assert get_header_and_sequence_lists(filehandle) 

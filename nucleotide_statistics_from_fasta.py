@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # nucleotide_statistics_from_fasta.py
-
-
+"""
+This script calculates the statistics of a sequence
+"""
 import sys
+import re
 import argparse
 
 def get_fh(filename, openfile):
@@ -11,23 +13,24 @@ def get_fh(filename, openfile):
     """
     try:
         newfile = open(filename, openfile)
-    
+        file1 = open("pdb_protein.fasta")
+        file2 = open("pdb_ss.fasta")
+        newfile.close()
+
     except ValueError as val:
         if len(openfile) > 1:
             print("Wrong argument is passed", val)
 
-    except IOError as io:
-        print("File cannot be opened", io)
+    except IOError as error:
+        print("File cannot be opened", error)
 
-    newfile.close()
-
-    return newfile
+    return newfile, file1, file2
 
 def _check_size_of_lists(header, sequence):
     """
     Compares the sizes of two lists
     """
-    if len(sequence) != len(head):
+    if len(sequence) != len(header):
         sys.exit("The size of the sequence list is not equal to that of the header list")
 
     else:
@@ -54,12 +57,12 @@ def _get_nt_occurrence(character, sequence):
     """
     count = 0
     if character in "AGCTN":
-        for i, seq in enumerate(sequence):
+        for seq in enumerate(sequence):
             if seq == character:
                 count += 1
 
     else:
-       sys.exit("Did not code this condition")
+        sys.exit("Did not code this condition")
 
     return count
 
@@ -75,36 +78,36 @@ def print_sequence_stats(header, sequence, filehandle):
     """
     number = 0
     accession = _get_accession(header)
-    A = _get_nt_occurrence('A', sequence)
+    a = _get_nt_occurrence('A', sequence)
     G = _get_nt_occurrence('G', sequence)
     C = _get_nt_occurrence('C', sequence)
     T = _get_nt_occurrence('T', sequence)
     N = _get_nt_occurrence('N', sequence)
     length = len(sequence)
     GC = (G + C) / length
-    
-    print(f'Number'\t'Accession'\t"A's"\t"G's"\t"C's"\t"T's"\t"N's"\t'Length'\t'GC%')
+
+    print(f'Number\tAccession\t"As"\t"Gs"\t"Cs"\t"Ts"\t"Ns"\tLength\tGC%')
 
     print('\n')
-    print(f'{number}\t{accession}\t{A}\t{G}\t{C}\t{T}\t{N}\t{length}\t{GC.1f}')
- 
+    print(f'{number}\t{accession}\t{A}\t{G}\t{C}\t{T}\t{N}\t{length}\t{GC:.1f}')
+
 def get_cli_args():
     """
     Gets command line options using argparse
     """
     parser = argparse.ArgumentParser(
-            description = 'Give the fasta sequence file name to get the nucleotide statistics')
+        description='Give the fasta sequence file name to get the nucleotide statistics')
 
     parser.add_argument('-i', '--infile',
-                        dest = 'INFILE',
-                        type = str
-                        help = 'Path to the file to open'
-                        required = True)
+                        dest='INFILE',
+                        type=str,
+                        help='Path to the file to open',
+                        required=True)
 
     parser.add_argument('-o', '--outfile',
-                        dest = 'OUTFILE',
-                        type = str
-                        help = 'Path to the file to write'
-                        required = True)
+                        dest='OUTFILE',
+                        type=str,
+                        help='Path to the file to write',
+                        required=True)
 
     return parser.parse_args()

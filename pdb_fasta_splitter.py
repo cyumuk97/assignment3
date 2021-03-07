@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # pdb_fasta_splitter.py
-
+"""
+This script opens a file and generates two files with protein sequence and secondary structures
+"""
 import sys
 import re
 import argparse
@@ -11,23 +13,25 @@ def get_fh(filename, openfile):
     """
     try:
         newfile = open(filename, openfile)
+        file1 = open("pdb_protein.fasta")
+        file2 = open("odb_ss.fasta")
+        newfile.close()
 
     except ValueError as val:
         if len(openfile) > 1:
             print("Wrong argument is passed", val)
 
-    except IOError as io:
-        print("File cannot be opened", io)
+    except IOError as error:
+        print("File cannot be opened", error)
 
-    return newfile
+    return newfile, file1, file2
 
-    newfile.close()
 
 def _check_size_of_lists(header, sequence):
     """
     Compares the sizes of two lists
     """
-    if len(sequence) != len(head):
+    if len(sequence) != len(header):
         sys.exit("The size of the sequence list is not equal to the size of the header list")
 
     else:
@@ -45,7 +49,7 @@ def get_header_and_sequence_lists(filehandle):
             header.append(line)
         sequence.append(line)
 
-    _check_size_of_lists(header,sequence)
+    _check_size_of_lists(header, sequence)
     return sequence, header
 
 def get_cli_args():
@@ -53,7 +57,7 @@ def get_cli_args():
     Gets command line options using argparse
     """
     parser = argparse.ArgumentParser(
-            description='Give the fasta sequence file name to do the splitting')
+        description='Give the fasta sequence file name to do the splitting')
 
     parser.add_argument('-i', '--infile',
                         dest='INFILE',
